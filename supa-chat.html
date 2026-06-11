@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Мой мессенджер</title>
   <style>
-    /* Стили оставь те же, что были — они не вызывают ошибок */
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1e1e2f; display: flex; justify-content: center; align-items: center; height: 100vh; }
     .chat-container { width: 100%; max-width: 500px; height: 90vh; background: #2a2a3c; border-radius: 16px; display: flex; flex-direction: column; box-shadow: 0 10px 30px rgba(0,0,0,0.5); overflow: hidden; }
@@ -49,12 +48,12 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <script>
-    // ⚠️ ЗАМЕНИ НА СВОИ КЛЮЧИ
+    // ⚠️ Твои ключи
     const SUPABASE_URL = "https://zgvpyypckstbefcoyrzk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_PVxpuNJpjdmPgBL6_Kna_A_O9KnYxX6";
 
-    // Инициализация Supabase (ТОЛЬКО ОДИН РАЗ)
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // Инициализация Supabase — на этот раз переменная называется supabaseClient
+    const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const messagesDiv = document.getElementById("messages");
     const messageInput = document.getElementById("messageInput");
@@ -85,7 +84,7 @@
       const text = messageInput.value.trim();
       if (text === "") return;
 
-      const { error } = await supabase
+      const { error } = await supabaseClient
         .from("messages")
         .insert([{ author: myName, text: text }]);
 
@@ -104,7 +103,7 @@
     });
 
     async function loadMessages() {
-      const { data, error } = await supabase
+      const { data, error } = await supabaseClient
         .from("messages")
         .select("*")
         .order("created_at", { ascending: true })
@@ -120,7 +119,7 @@
         data.forEach(msg => displayMessage(msg.author, msg.text));
       }
 
-      supabase
+      supabaseClient
         .channel("public:messages")
         .on("postgres_changes", {
           event: "INSERT",
