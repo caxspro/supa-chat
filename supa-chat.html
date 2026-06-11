@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>Общий чат</title>
-  <link rel="manifest" href="/supa-chat/manifest.json">
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { height: 100%; overflow: hidden; background: #1e1e2f; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -18,7 +17,7 @@
     .msg .text { font-size: 1rem; margin-bottom: 2px; }
     .msg .time { font-size: 0.65rem; opacity: 0.7; text-align: right; }
     .msg img { max-width: 200px; max-height: 200px; border-radius: 12px; margin-top: 4px; cursor: pointer; }
-    .input-area { position: sticky; bottom: 0; width: 100%; background: #2a2a3c; border-top: 1px solid #3e3e55; padding: 8px 12px; display: flex; gap: 8px; flex-shrink: 0; z-index: 10; align-items: center; }
+    .input-area { display: flex; gap: 8px; align-items: center; padding: 8px 12px; background: #2a2a3c; border-top: 1px solid #3e3e55; flex-shrink: 0; }
     .input-area input[type="text"] { flex: 1; padding: 12px 16px; border: none; border-radius: 24px; background: #3a3a4f; color: #fff; font-size: 16px; outline: none; }
     .input-area input[type="text"]::placeholder { color: #aaa; }
     .input-area button { padding: 12px 16px; border: none; border-radius: 24px; background: #4f6ef7; color: white; font-weight: bold; font-size: 16px; cursor: pointer; white-space: nowrap; }
@@ -28,6 +27,7 @@
     .name-prompt input { padding: 10px; border-radius: 8px; border: none; margin: 12px 0; width: 80%; }
     .name-prompt button { padding: 10px 24px; border: none; border-radius: 8px; background: #4f6ef7; color: white; font-weight: bold; cursor: pointer; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    /* Мобильная адаптация */
     @media (max-width: 600px) {
       .input-area {
         position: fixed;
@@ -36,6 +36,7 @@
         transform: translateX(-50%);
         max-width: 600px;
         width: 100%;
+        z-index: 10;
       }
       #messages { padding-bottom: 80px; }
     }
@@ -52,7 +53,7 @@
     </div>
   </div>
 
-  <!-- Сам чат -->
+  <!-- Общий чат -->
   <div class="chat-container" id="chatApp" style="display:none;">
     <div class="chat-header">💬 Общий чат</div>
     <div id="messages"></div>
@@ -66,7 +67,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ⚠️ Твои ключи Supabase
+    // ⚠️ ТВОИ КЛЮЧИ SUPABASE
     const SUPABASE_URL = "https://zgvpyypckstbefcoyrzk.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_PVxpuNJpjdmPgBL6_Kna_A_O9KnYxX6";
 
@@ -104,7 +105,6 @@
 
     // Загрузка истории и подписка на новые сообщения
     async function loadHistoryAndSubscribe() {
-      // Загружаем последние 50 сообщений
       const { data, error } = await supabase
         .from("chat_messages")
         .select("*")
@@ -118,7 +118,7 @@
       messagesDiv.innerHTML = "";
       if (data) data.forEach(msg => displayMessage(msg));
 
-      // Подписка на новые
+      // Подписка на новые сообщения в реальном времени
       supabase
         .channel("public:chat_messages")
         .on("postgres_changes", {
@@ -209,7 +209,7 @@
       return div.innerHTML;
     }
 
-    // Адаптация под мобильную клавиатуру
+    // Адаптация под мобильную клавиатуру (чтобы поле ввода было видно)
     if (window.visualViewport) {
       const inputArea = document.querySelector(".input-area");
       window.visualViewport.addEventListener("resize", () => {
