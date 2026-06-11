@@ -1,0 +1,15 @@
+{
+  "name": "Мой мессенджер",
+  "short_name": "Мессенджер",
+  "start_url": "/supa-chat/supa-chat.html",
+  "display": "standalone",
+  "background_color": "#1e1e2f",
+  "theme_color": "#4f6ef7",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/134/134718.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
