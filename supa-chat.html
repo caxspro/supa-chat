@@ -40,6 +40,17 @@
     @media (max-width: 600px) { .messenger { flex-direction: column; } .sidebar { width: 100%; height: 40%; } }
   </style>
 </head>
+    <!-- PWA manifest -->
+  <link rel="manifest" href="/supa-chat/manifest.json">
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("/supa-chat/service-worker.js")
+          .then(reg => console.log("SW зарегистрирован"))
+          .catch(err => console.log("SW ошибка", err));
+      });
+    }
+  </script>
 <body>
   <!-- Окно ввода имени -->
   <div id="namePrompt" class="name-modal">
